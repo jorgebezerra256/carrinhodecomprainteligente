@@ -4,6 +4,7 @@
 import RPi.GPIO as GPIO
 import MFRC522
 import signal
+import Funcoes
 
 continue_reading = True
 
@@ -56,9 +57,12 @@ while continue_reading:
             data = []
 
             # Fill the data with 0xFF
-            for x in range(0,16):
-                data.append(0xFF)
-
+            #for x in range(0,16):
+             #   data.append(0xFF)
+             
+            marca = stringToListInt("Marca:")
+            data.append(marca)
+            
             print "Sector 8 looked like this:"
             # Read block 8
             MIFAREReader.MFRC522_Read(8)
