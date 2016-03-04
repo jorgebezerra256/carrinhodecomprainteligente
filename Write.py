@@ -4,7 +4,7 @@
 import RPi.GPIO as GPIO
 import MFRC522
 import signal
-import Funcoes
+from Funcoes import *
 
 continue_reading = True
 
@@ -29,7 +29,7 @@ while continue_reading:
 
     # If a card is found
     if status == MIFAREReader.MI_OK:
-        print "Card detected"
+        print "Produto detectado"
     
     # Get the UID of the card
     (status,uid) = MIFAREReader.MFRC522_Anticoll()
@@ -54,31 +54,30 @@ while continue_reading:
         if status == MIFAREReader.MI_OK:
 
             # Variable for the data to write
-            data = []
+            ##data = []
 
             # Fill the data with 0xFF
             #for x in range(0,16):
-             #   data.append(0xFF)
-             
+                #data.append(0xFF)
+                        
             marca = stringToListInt("Marca:")
-            data.append(marca)
-            
+                                   
             print "Sector 8 looked like this:"
             # Read block 8
             MIFAREReader.MFRC522_Read(8)
             print "\n"
 
-            print "Sector 8 will now be filled with 0xFF:"
+            print "Sector 6 will now be filled with 0xFF:"
             # Write the data
-            MIFAREReader.MFRC522_Write(8, data)
+            MIFAREReader.MFRC522_Write(6, marca)
             print "\n"
 
             print "It now looks like this:"
             # Check to see if it was written
-            MIFAREReader.MFRC522_Read(8)
+            MIFAREReader.MFRC522_Read(6)
             print "\n"
 
-            data = []
+            """data = []
             # Fill the data with 0x00
             for x in range(0,16):
                 data.append(0x00)
@@ -91,11 +90,11 @@ while continue_reading:
             # Check to see if it was written
             MIFAREReader.MFRC522_Read(8)
             print "\n"
-
+            """
             # Stop
             MIFAREReader.MFRC522_StopCrypto1()
 
             # Make sure to stop reading for cards
             continue_reading = False
         else:
-            print "Authentication error"
+            print "Erro de Autenticação"

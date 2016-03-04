@@ -2,7 +2,7 @@ def stringToListInt(string):
     listInt = []
     for c in string:
         listInt.append(ord(c))
-    return lisInt
+    return listInt
 
 def ListintToListString(inteiro):
     listChar = []

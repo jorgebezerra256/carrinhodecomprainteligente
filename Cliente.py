@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-
+#http://wiki.python.org.br/SocketBasico
 #https://www.passeidireto.com/arquivo/6120307/programa-cliente-echo-usando-tcp---python
 """
 Cliente ECHO utilizando TCP
@@ -18,14 +18,15 @@ Eliezer Marques da Silva Neto
 #utilizar sockets para comunicação
 import socket
 
-#endereço local
-host = 'localhost'
+#endereço local 192.168.11.51
+host = '192.168.11.51'
 #porta de acesso
 porta = 9856
 
 #socket(socket_family, socket_type), o construtor cria um novo socket.  AF_INET - IPv4, SOCK_STREAM - TCP
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #conecta o socket ao endereço e porta
+
 s.connect((host,porta))
 #utiliza input() para entrada de dados do teclado
 msg = raw_input("Digite a mensagem: ")

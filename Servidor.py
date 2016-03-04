@@ -7,7 +7,7 @@
 import socket
 
 #endereço local
-host = 'localhost'
+host = ''
 #porta de acesso
 porta = 9856 
 
@@ -20,11 +20,13 @@ s.listen(1)
 
 print("Aguardando conexão com o cliente...")
 #Aceita a conexão, cliente é um novo socket e end é o endereço do cliente
-cliente, end = s.accept()
-#str() converte os dados no parâmetro, em string
-print("Conectado ao cliente: " + str(end))
 
-while True:
+#str() converte os dados no parâmetro, em string
+#print("Conectado ao cliente: " + str(end))
+
+while True:    
+    cliente, end = s.accept()
+    print("Conectado ao cliente: " + str(end))
     #armazena os dados de entrada em dados(buffer). Neste caso, de tamanho 1024 bytes
     dados = cliente.recv(1024)
     #Se não existirem dados para capturar, sai do while.
