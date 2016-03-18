@@ -11,7 +11,7 @@ continue_reading = True
 # Capture SIGINT for cleanup when the script is aborted
 def end_read(signal,frame):
     global continue_reading
-    print "Ctrl+C finaliza o sistema"
+    print "Ctrl+C captured, ending read."
     continue_reading = False
     GPIO.cleanup()
 
@@ -52,31 +52,43 @@ while continue_reading:
 
         # Check if authenticated
         if status == MIFAREReader.MI_OK:
-            
-            #gravar no setor 8
-            marca = stringToListInt("Marca:")
-            nomedamarca = stringToListInt(raw_input("Digite o nome da marca - maximo de 16 caracteres"))
-            #nomedamarca = stringToListInt(nomedamarca)
-            
-            
-            produto = strintToListInt("Produto:")
-            nomedopruduto
-                                   
-            print "Lendo setor 8 agora::"
+
+            # Variable for the data to write
+            data = []
+
+            # Fill the data with 0xFF
+            for x in range(0,16):
+                data.append(0xFF)                        
+                                              
+            print "Sector 8 looked like this:"
             # Read block 8
             MIFAREReader.MFRC522_Read(8)
             print "\n"
 
-            print "Escreve no setor 8:"
+            print "Sector 6 will now be filled with 0xFF:"
             # Write the data
-            MIFAREReader.MFRC522_Write(6, marca)
+            MIFAREReader.MFRC522_Write(8, data)
             print "\n"
 
-            print "Mostra o conteudo gravado:"
+            print "It now looks like this:"
             # Check to see if it was written
-            MIFAREReader.MFRC522_Read(6)
+            MIFAREReader.MFRC522_Read(8)
             print "\n"
-           
+
+            data = []
+            # Fill the data with 0x00
+            for x in range(0,16):
+                data.append(0x00)
+
+            print "Now we fill it with 0x00:"
+            MIFAREReader.MFRC522_Write(8, data)
+            print "\n"
+
+            print "It is now empty:"
+            # Check to see if it was written
+            MIFAREReader.MFRC522_Read(8)
+            print "\n"
+            
             # Stop
             MIFAREReader.MFRC522_StopCrypto1()
 

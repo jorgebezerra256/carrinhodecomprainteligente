@@ -116,10 +116,10 @@ class MFRC522:
   
   def MFRC522_Reset(self):
     self.Write_MFRC522(self.CommandReg, self.PCD_RESETPHASE)
-  #grava o valor informado no endereço especificado
+  
   def Write_MFRC522(self, addr, val):
     spi.transfer(((addr<<1)&0x7E,val))
-  #le o endereço especificado
+  
   def Read_MFRC522(self, addr):
     val = spi.transfer((((addr<<1)&0x7E) | 0x80,0))
     return val[1]
@@ -287,14 +287,14 @@ class MFRC522:
     (status, backData, backLen) = self.MFRC522_ToCard(self.PCD_TRANSCEIVE, buf)
     
     if (status == self.MI_OK) and (backLen == 0x18):
-      print "Size: " + str(backData[0])
+      #print "Size: " + str(backData[0])
       return    backData[0]
     else:
       return 0
   
   def MFRC522_Auth(self, authMode, BlockAddr, Sectorkey, serNum):
     buff = []
-    
+
     # First byte should be the authMode (A or B)
     buff.append(authMode)
 
@@ -340,7 +340,9 @@ class MFRC522:
       print "Error while reading!"
     i = 0
     if len(backData) == 16:
-      print "Sector "+str(blockAddr)+" "+str(backData)
+      return backData
+      #print "Sector "+str(blockAddr)+" "+str(backData)
+    return
   
   def MFRC522_Write(self, blockAddr, writeData):
     buff = []
@@ -353,7 +355,7 @@ class MFRC522:
     if not(status == self.MI_OK) or not(backLen == 4) or not((backData[0] & 0x0F) == 0x0A):
         status = self.MI_ERR
     
-    print str(backLen)+" backdata &0x0F == 0x0A "+str(backData[0]&0x0F)
+    #print str(backLen)+" backdata &0x0F == 0x0A "+str(backData[0]&0x0F)
     if status == self.MI_OK:
         i = 0
         buf = []

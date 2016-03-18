@@ -4,14 +4,13 @@
 import RPi.GPIO as GPIO
 import MFRC522
 import signal
-from Funcoes import *
 
 continue_reading = True
 
 # Capture SIGINT for cleanup when the script is aborted
 def end_read(signal,frame):
     global continue_reading
-    print "Ctrl+C finaliza o sistema"
+    print "Ctrl+C captured, ending read."
     continue_reading = False
     GPIO.cleanup()
 
@@ -21,6 +20,10 @@ signal.signal(signal.SIGINT, end_read)
 # Create an object of the class MFRC522
 MIFAREReader = MFRC522.MFRC522()
 
+# Welcome message
+print "Welcome to the MFRC522 data read example"
+print "Press Ctrl-C to stop."
+
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
 while continue_reading:
     
@@ -29,7 +32,7 @@ while continue_reading:
 
     # If a card is found
     if status == MIFAREReader.MI_OK:
-        print "Produto detectado"
+        print "Card detected"
     
     # Get the UID of the card
     (status,uid) = MIFAREReader.MFRC522_Anticoll()
@@ -45,42 +48,15 @@ while continue_reading:
         
         # Select the scanned tag
         MIFAREReader.MFRC522_SelectTag(uid)
+        var = 20
 
         # Authenticate
-        status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
-        print "\n"
+        status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, var, key, uid)
 
         # Check if authenticated
         if status == MIFAREReader.MI_OK:
-            
-            #gravar no setor 8
-            marca = stringToListInt("Marca:")
-            nomedamarca = stringToListInt(raw_input("Digite o nome da marca - maximo de 16 caracteres"))
-            #nomedamarca = stringToListInt(nomedamarca)
-            
-            
-            produto = strintToListInt("Produto:")
-            nomedopruduto
-                                   
-            print "Lendo setor 8 agora::"
-            # Read block 8
-            MIFAREReader.MFRC522_Read(8)
-            print "\n"
-
-            print "Escreve no setor 8:"
-            # Write the data
-            MIFAREReader.MFRC522_Write(6, marca)
-            print "\n"
-
-            print "Mostra o conteudo gravado:"
-            # Check to see if it was written
-            MIFAREReader.MFRC522_Read(6)
-            print "\n"
-           
-            # Stop
+            print MIFAREReader.MFRC522_Read(var)
             MIFAREReader.MFRC522_StopCrypto1()
-
-            # Make sure to stop reading for cards
-            continue_reading = False
         else:
-            print "Erro de Autenticação"
+            print "Authentication error"
+

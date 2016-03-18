@@ -11,8 +11,9 @@ continue_reading = True
 # Capture SIGINT for cleanup when the script is aborted
 def end_read(signal,frame):
     global continue_reading
-    print "Ctrl+C finaliza o sistema"
+    print "Ctrl+C captured, ending read."
     continue_reading = False
+    setor = 26
     GPIO.cleanup()
 
 # Hook the SIGINT
@@ -21,66 +22,60 @@ signal.signal(signal.SIGINT, end_read)
 # Create an object of the class MFRC522
 MIFAREReader = MFRC522.MFRC522()
 
+# Welcome message
+print "Bem vindo ao supermercado XYZ!"
+print "Precione Ctrl-C para finalizar a aplicação."
+
+setor = 20
+#cartao = []
 # This loop keeps checking for chips. If one is near it will get the UID and authenticate
-while continue_reading:
+while continue_reading and setor != 26:
     
     # Scan for cards    
     (status,TagType) = MIFAREReader.MFRC522_Request(MIFAREReader.PICC_REQIDL)
 
     # If a card is found
     if status == MIFAREReader.MI_OK:
-        print "Produto detectado"
+        print "Produto detectado!"
     
     # Get the UID of the card
     (status,uid) = MIFAREReader.MFRC522_Anticoll()
-
+    
     # If we have the UID, continue
     if status == MIFAREReader.MI_OK:
 
         # Print UID
-        print "Card read UID: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3])
+        #print "UID da TAG rfid: "+str(uid[0])+","+str(uid[1])+","+str(uid[2])+","+str(uid[3])
     
         # This is the default key for authentication
         key = [0xFF,0xFF,0xFF,0xFF,0xFF,0xFF]
         
         # Select the scanned tag
         MIFAREReader.MFRC522_SelectTag(uid)
+        
 
         # Authenticate
-        status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 8, key, uid)
-        print "\n"
+        status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, setor, key, uid)
 
         # Check if authenticated
+        
         if status == MIFAREReader.MI_OK:
+            cartao = MIFAREReader.MFRC522_Read(setor)            
+            print "\nMarca do produto:"                   
             
-            #gravar no setor 8
-            marca = stringToListInt("Marca:")
-            nomedamarca = stringToListInt(raw_input("Digite o nome da marca - maximo de 16 caracteres"))
-            #nomedamarca = stringToListInt(nomedamarca)
+            produto = listIntToListString(cartao)
+            print produto
             
-            
-            produto = strintToListInt("Produto:")
-            nomedopruduto
-                                   
-            print "Lendo setor 8 agora::"
-            # Read block 8
-            MIFAREReader.MFRC522_Read(8)
-            print "\n"
-
-            print "Escreve no setor 8:"
-            # Write the data
-            MIFAREReader.MFRC522_Write(6, marca)
-            print "\n"
-
-            print "Mostra o conteudo gravado:"
-            # Check to see if it was written
-            MIFAREReader.MFRC522_Read(6)
-            print "\n"
-           
-            # Stop
             MIFAREReader.MFRC522_StopCrypto1()
 
-            # Make sure to stop reading for cards
-            continue_reading = False
+            print setor
+            setor = setor + 1
+            
         else:
-            print "Erro de Autenticação"
+            print setor
+            setor = setor + 1            
+            print "Erro de Autenticação!"
+
+        if setor == 26:
+            setor = 20
+            continue
